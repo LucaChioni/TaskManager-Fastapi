@@ -24,18 +24,15 @@ async def get_task(task_id: int) -> Task:
 
     return task
 
-@router.post("")
-async def create_tasks(new_tasks: list[NewTask]) -> list[Task]:
-    created_tasks = []
-    for new_task in new_tasks:
-        new_id = max(task.id for task in tasks) + 1 if tasks else 1
-        task = Task(id=new_id, **new_task.model_dump())
-        created_tasks.append(task)
+@router.post("/new")
+async def create_task(new_task: NewTask) -> Task:
+    new_id = max(task.id for task in tasks) + 1 if tasks else 1
+    task = Task(id=new_id, **new_task.model_dump(exclude_unset=True))
 
-    tasks.extend(created_tasks)
-    return created_tasks
+    tasks.append(task)
+    return task
 
-@router.put("/{task_id}")
+@router.put("/edit")
 async def update_task(updated_task: UpdatedTask) -> Task:
     task = next((task for task in tasks if task.id == updated_task.id), None)
     if not task:
