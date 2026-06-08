@@ -1,11 +1,12 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class Credentials(BaseModel):
     username: str
     password: str
 
-class User(BaseModel):
+class UserResponse(BaseModel):
     id: int
     username: str
-    hashed_password: str
+
+    model_config = ConfigDict(from_attributes=True)
